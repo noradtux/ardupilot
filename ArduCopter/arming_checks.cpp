@@ -70,6 +70,10 @@ bool Copter::pre_arm_checks(bool display_failure)
 
     // succeed if pre arm checks are disabled
     if (g.arming_check == ARMING_CHECK_NONE) {
+//OW
+        // do the component prearm check at the very last, we thus may have to bypass this if
+        if (!BP_Component_pre_arm_check(display_failure)) return false;
+//OWEND
         set_pre_arm_check(true);
         set_pre_arm_rc_check(true);
         return true;
@@ -83,7 +87,10 @@ bool Copter::pre_arm_checks(bool display_failure)
         & ins_checks(display_failure)
         & board_voltage_checks(display_failure)
         & parameter_checks(display_failure)
-        & pilot_throttle_checks(display_failure);
+        & pilot_throttle_checks(display_failure)
+//OW
+        & BP_Component_pre_arm_check(display_failure);
+//OWEND
 }
 
 bool Copter::rc_calibration_checks(bool display_failure)
@@ -705,6 +712,10 @@ bool Copter::arm_checks(bool display_failure, bool arming_from_gcs)
 
     // succeed if arming checks are disabled
     if (g.arming_check == ARMING_CHECK_NONE) {
+//OW
+        // do the component arm check at the very last, we thus may have to bypass this if
+        if (!BP_Component_arm_check(display_failure)) return false;
+//OWEND
         return true;
     }
 
@@ -825,6 +836,10 @@ bool Copter::arm_checks(bool display_failure, bool arming_from_gcs)
         }
         return false;
     }
+
+//OW
+    if (!BP_Component_arm_check(display_failure)) return false;
+//OWEND
 
     // if we've gotten this far all is ok
     return true;

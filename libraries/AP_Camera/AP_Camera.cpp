@@ -13,6 +13,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #endif
+//OW
+#include <AP_Mount/BP_Component.h>
+//OWEND
 
 // ------------------------------
 #define CAM_DEBUG DISABLED
@@ -159,6 +162,11 @@ AP_Camera::trigger_pic(bool send_mavlink_msg)
         // forward to all components
         GCS_MAVLINK::send_to_components(&msg);
     }
+
+//OW
+    // this here is the lowest level place, i.e., all possible paths to trigger a picture end here
+    BP_Component_set_trigger_picture();
+//OWEND
 }
 
 /// de-activate the trigger after some delay, but without using a delay() function

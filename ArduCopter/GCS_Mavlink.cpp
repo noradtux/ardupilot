@@ -1028,6 +1028,9 @@ void GCS_MAVLINK_Copter::handleMessage(mavlink_message_t* msg)
 #endif
         send_text(MAV_SEVERITY_INFO, "Frame: " FRAME_CONFIG_STRING);
         handle_param_request_list(msg);
+//OW
+        BP_Component_set_gcs_sendbanner();
+//OWEND
         break;
     }
 
@@ -1603,7 +1606,9 @@ void GCS_MAVLINK_Copter::handleMessage(mavlink_message_t* msg)
             if (hal.util->get_system_id(sysid)) {
                 send_text(MAV_SEVERITY_INFO, sysid);
             }
-
+//OW
+            BP_Component_set_gcs_sendbanner();
+//OWEND
             break;
         }
 

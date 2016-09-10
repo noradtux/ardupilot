@@ -89,6 +89,9 @@
 #include <AC_InputManager/AC_InputManager.h>        // Pilot input handling library
 #include <AC_InputManager/AC_InputManager_Heli.h>   // Heli specific pilot input handling library
 #include <AP_Button/AP_Button.h>
+//OW
+#include <AP_Mount/BP_Component.h>
+//OWEND
 
 // Configuration
 #include "defines.h"
@@ -530,6 +533,10 @@ private:
 
     // handle repeated servo and relay events
     AP_ServoRelayEvents ServoRelayEvents;
+
+//OW
+    BP_Component component;
+//OWEND
 
     // Reference to the camera object (it uses the relay object inside it)
 #if CAMERA == ENABLED
@@ -1156,6 +1163,14 @@ public:
     int8_t test_rangefinder(uint8_t argc, const Menu::arg *argv);
 
     int8_t reboot_board(uint8_t argc, const Menu::arg *argv);
+
+//OW
+    //hm, need to learn c++, there is probably a better approach :-(
+    void letme_gcs_send_text(MAV_SEVERITY severity, const char *str){ gcs_send_text(severity, str); }
+    bool letme_get_pream_checks_passed(){ return ap.pre_arm_check; }
+    bool letme_get_motors_armed(){ return motors.armed(); }
+    bool letme_get_ekf_filter_status(){ return inertial_nav.get_filter_status().flags.attitude; }
+//OWEND
 };
 
 #define MENU_FUNC(func) FUNCTOR_BIND(&copter, &Copter::func, int8_t, uint8_t, const Menu::arg *)

@@ -952,6 +952,12 @@ const AP_Param::Info Copter::var_info[] = {
     // @User: Standard
     GSCALAR(terrain_follow, "TERRAIN_FOLLOW", 0),
 
+//OW
+    // @Group: STORM_
+    // @Path: ../libraries/AP_Mount/BP_Component.cpp
+    GOBJECT(component, "STORM", BP_Component),
+//OWEND
+
     // @Group: 
     // @Path: Parameters.cpp
     GOBJECT(g2, "",  ParametersG2),

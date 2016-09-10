@@ -196,6 +196,14 @@ void AP_SerialManager::init()
                                          AP_SERIALMANAGER_SToRM32_BUFSIZE_RX,
                                          AP_SERIALMANAGER_SToRM32_BUFSIZE_TX);
                     break;
+//OW
+                case SerialProtocol_STorM32_Native:
+                    state[i].baud = AP_SERIALMANAGER_SToRM32_BAUD / 1000;
+                    state[i].uart->begin(map_baudrate(state[i].baud),
+                                         AP_SERIALMANAGER_SToRM32_BUFSIZE_RX,
+                                         AP_SERIALMANAGER_SToRM32_BUFSIZE_TX);
+                    break;
+//OWEND
             }
         }
     }

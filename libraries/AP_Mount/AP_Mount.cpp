@@ -9,6 +9,9 @@
 #include "AP_Mount_Alexmos.h"
 #include "AP_Mount_SToRM32.h"
 #include "AP_Mount_SToRM32_serial.h"
+//OW
+#include "BP_Mount_Component.h"
+//OWEND
 
 const AP_Param::GroupInfo AP_Mount::var_info[] = {
     // @Param: _DEFLT_MODE
@@ -439,7 +442,17 @@ void AP_Mount::init(DataFlash_Class *dataflash, const AP_SerialManager& serial_m
         MountType mount_type = get_mount_type(instance);
 
         // check for servo mounts
-        if (mount_type == Mount_Type_Servo) {
+//OW
+        //XX if (mount_type == Mount_Type_STorM32_Native) {
+        // we check if we can find the respective uart, it would be better to directly test the parameter field
+        // we do this first to ensure that the MNT_TYPE setting is ignored in case a native STorM32 protocol is used
+        // this is quite hacky, as doing it here assumes that AP_MOUNT_MAX_INSTANCES is 1
+        if (serial_manager.find_serial(AP_SerialManager::SerialProtocol_STorM32_Native, 0)) {
+            _backends[instance] = new BP_Mount_Component(*this, state[instance], instance);
+            _num_instances++;
+        } else
+//OWEND
+            if (mount_type == Mount_Type_Servo) {
             _backends[instance] = new AP_Mount_Servo(*this, state[instance], instance);
             _num_instances++;
 

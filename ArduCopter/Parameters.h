@@ -224,6 +224,10 @@ public:
         k_param_fs_batt_curr_rtl,
         k_param_rtl_cone_slope, // 137
 
+//OW
+        k_param_component = 139,
+//OWEND
+
         //
         // 140: Sensor parameters
         //

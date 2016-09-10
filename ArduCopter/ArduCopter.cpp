@@ -168,6 +168,10 @@ void Copter::setup()
 
     init_ardupilot();
 
+//OW
+    component.init(serial_manager);
+//OWEND
+
     // initialise the main loop scheduler
     scheduler.init(&scheduler_tasks[0], ARRAY_SIZE(scheduler_tasks));
 
@@ -261,6 +265,10 @@ void Copter::fast_loop()
     // send outputs to the motors library
     motors_output();
 
+//OW
+    component.do_tick();
+//OWEND
+
     // Inertial Nav
     // --------------------
     read_inertia();
@@ -276,6 +284,10 @@ void Copter::fast_loop()
 
     // check if we've landed or crashed
     update_land_and_crash_detectors();
+
+//OW
+    component.do_task();
+//OWEND
 
 #if MOUNT == ENABLED
     // camera mount's fast update
