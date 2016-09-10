@@ -10,6 +10,13 @@ void Copter::failsafe_radio_on_event()
 {
     // if motors are not armed there is nothing to do
     if( !motors.armed() ) {
+//OW
+        //this is a serious BUG, failsafe should be logged and reported also if motors are disarmed
+        // this should be generally true, but since AP insists to not like it, do it just when our secret key is set
+        if (BP_Component_get_param_fshover()) {
+            Log_Write_Error(ERROR_SUBSYSTEM_FAILSAFE_RADIO, ERROR_CODE_FAILSAFE_OCCURRED);
+        }
+//OWEND
         return;
     }
 
@@ -24,7 +31,14 @@ void Copter::failsafe_radio_on_event()
             if (g.failsafe_throttle == FS_THR_ENABLED_ALWAYS_LAND) {
                 set_mode_land_with_pause(MODE_REASON_RADIO_FAILSAFE);
             } else {
-                set_mode_RTL_or_land_with_pause(MODE_REASON_RADIO_FAILSAFE);
+//OW
+                if (BP_Component_get_param_fshover()) {
+                    // consider this case, but skip over it as nothing should be done here
+                    // the setting of the pwm values is done in read_radio() in radio.cpp
+                } else {
+                    set_mode_RTL_or_land_with_pause(MODE_REASON_RADIO_FAILSAFE);
+                }
+//OWEND
             }
         }
     }

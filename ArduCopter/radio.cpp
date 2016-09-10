@@ -129,6 +129,16 @@ void Copter::read_radio()
             set_failsafe_radio(true);
         }
     }
+//OW
+    // this is a serious, safety relevant BUG
+    // put vehicle into a hover situation
+    if (failsafe.radio && BP_Component_get_param_fshover()) {
+        channel_roll->set_pwm(1500); //roll
+        channel_pitch->set_pwm(1500); //pitch
+        channel_throttle->set_pwm(1500); //throttle
+        channel_yaw->set_pwm(1500); //yaw
+    }
+//OWEND
 }
 
 #define FS_COUNTER 3        // radio failsafe kicks in after 3 consecutive throttle values below failsafe_throttle_value
