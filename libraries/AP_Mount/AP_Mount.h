@@ -93,8 +93,7 @@ public:
     enum MAV_MOUNT_MODE get_mode(uint8_t instance) const;
 
     // set_mode - sets mount's mode
-    //  returns true if mode is successfully set
-    void set_mode(enum MAV_MOUNT_MODE mode) { return set_mode(_primary, mode); }
+    void set_mode(enum MAV_MOUNT_MODE mode) { set_mode(_primary, mode); }
     void set_mode(uint8_t instance, enum MAV_MOUNT_MODE mode);
 
     // set_mode_to_default - restores the mode to it's default mode held in the MNT_DEFLT_MODE parameter
