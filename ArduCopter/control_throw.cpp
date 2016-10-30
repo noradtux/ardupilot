@@ -1,5 +1,3 @@
-/// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
-
 #include "Copter.h"
 
 
@@ -144,7 +142,7 @@ void Copter::throw_run()
         attitude_control.input_euler_angle_roll_pitch_euler_rate_yaw(0.0f, 0.0f, 0.0f, get_smoothing_gain());
 
         // output 50% throttle and turn off angle boost to maximise righting moment
-        attitude_control.set_throttle_out(500, false, g.throttle_filt);
+        attitude_control.set_throttle_out(0.5f, false, g.throttle_filt);
 
         break;
 

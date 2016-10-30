@@ -1,5 +1,3 @@
-/// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
-
 #include <AP_HAL/AP_HAL.h>
 
 #include "AP_NavEKF_core.h"
@@ -5137,8 +5135,8 @@ void NavEKF_core::readRangeFinder(void)
                 minIndex = 1;
                 maxIndex = 0;
             } else {
-                maxIndex = 0;
-                minIndex = 1;
+                minIndex = 0;
+                maxIndex = 1;
             }
             if (storedRngMeas[2] > storedRngMeas[maxIndex]) {
                 midIndex = maxIndex;

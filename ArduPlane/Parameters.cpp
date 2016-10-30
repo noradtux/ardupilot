@@ -1,5 +1,3 @@
-/// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
-
 #include "Plane.h"
 
 /*
@@ -1378,6 +1376,17 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // @Group: ICE_
     // @Path: ../libraries/AP_ICEngine/AP_ICEngine.cpp
     AP_SUBGROUPINFO(ice_control, "ICE_", 2, ParametersG2, AP_ICEngine),
+
+    // @Group: SERVO_
+    // @Path: ../libraries/RC_Channel/SRV_Channel.cpp
+    AP_SUBGROUPINFO(servo_channels, "SERVO", 3, ParametersG2, SRV_Channels),
+
+    // @Group: SYSID_ENFORCE
+    // @DisplayName: GCS sysid enforcement
+    // @Description: This controls whether packets from other than the expected GCS system ID will be accepted
+    // @Values: 0:NotEnforced,1:Enforced
+    // @User: Advanced
+    AP_GROUPINFO("SYSID_ENFORCE", 4, ParametersG2, sysid_enforce, 0),
     
     AP_GROUPEND
 };

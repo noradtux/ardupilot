@@ -1,4 +1,3 @@
-// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
 /*
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -54,7 +53,7 @@ private:
     "spm, Rover, StandAlone+SBAS+DGPS+RTK\n",
     "sso, Stream2, Dsk1, postprocess+event, msec100\n"};
    
-    uint32_t last_hdop = 999;
+    uint32_t last_hdop = 9999;
     uint32_t crc_error_counter = 0;
     uint32_t last_injected_data_ms = 0;
     bool validcommand = false;

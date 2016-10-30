@@ -1,4 +1,3 @@
-// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
 /*
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -482,9 +481,10 @@ void RC_Channel::output() const
     hal.rcout->write(_ch_out, _radio_out);
 }
 
-void RC_Channel::output_trim() const
+void RC_Channel::output_trim()
 {
-    hal.rcout->write(_ch_out, _radio_trim);
+    _radio_out = _radio_trim;
+    output();
 }
 
 void RC_Channel::output_trim_all()
@@ -569,4 +569,44 @@ uint16_t RC_Channel::get_limit_pwm(LimitValue limit) const
 bool RC_Channel::in_trim_dz()
 {
     return is_bounded_int32(_radio_in, _radio_trim - _dead_zone, _radio_trim + _dead_zone);
+}
+
+
+/*
+  return the current radio_out value normalised as a float with 1.0
+  being full output and 0.0 being zero output, taking into account
+  output type and reversals
+
+  For angle outputs the returned value is from -1 to 1
+
+  For range outputs the returned value is from 0 to 1
+ */
+float RC_Channel::get_radio_out_normalised(uint16_t pwm) const
+{
+    if (_radio_max <= _radio_min) {
+        return 0;
+    }
+    float ret;
+    if (_type_out == RC_CHANNEL_TYPE_RANGE) {
+        if (pwm <= _radio_min) {
+            ret = 0;
+        } else if (pwm >= _radio_max) {
+            ret = 1;
+        } else {
+            ret = (pwm - _radio_min) / float(_radio_max - _radio_min);
+        }
+        if (_reverse == -1) {
+            ret = 1 - ret;
+        }
+    } else {
+        if (pwm < _radio_trim) {
+            ret = -(_radio_trim - pwm) / float(_radio_trim - _radio_min);
+        } else {
+            ret = (pwm - _radio_trim) / float(_radio_max - _radio_trim);
+        }
+        if (_reverse == -1) {
+            ret = -ret;
+        }
+    }
+    return ret;
 }

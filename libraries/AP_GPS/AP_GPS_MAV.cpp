@@ -1,4 +1,3 @@
-// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
 /*
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -69,11 +68,11 @@ void AP_GPS_MAV::handle_msg(const mavlink_message_t *msg)
     state.location.options = 0;
 
     if (have_hdop) {
-        state.hdop = packet.hdop * 10; //In centimeters
+        state.hdop = packet.hdop * 100; // convert to centimeters
     }
 
     if (have_vdop) {
-        state.vdop = packet.vdop * 10; //In centimeters
+        state.vdop = packet.vdop * 100; // convert to centimeters
     }
 
     if (have_vel_h) {

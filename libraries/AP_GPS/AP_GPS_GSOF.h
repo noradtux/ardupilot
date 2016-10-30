@@ -1,4 +1,3 @@
-// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
 /*
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -83,6 +82,5 @@ private:
     uint8_t gsofmsgreq_index = 0;
     uint8_t gsofmsgreq[5] = {1,2,8,9,12};
 
-    uint32_t crc_error_counter = 0;
     uint32_t last_injected_data_ms = 0;
 };

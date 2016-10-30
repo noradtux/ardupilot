@@ -1,5 +1,3 @@
-// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
-
 /*
   Common GCS MAVLink functions for all vehicle types
 
@@ -985,7 +983,8 @@ void GCS_MAVLINK::packetReceived(const mavlink_status_t &status,
     if (msg_snoop != NULL) {
         msg_snoop(&msg);
     }
-    if (routing.check_and_forward(chan, &msg)) {
+    if (routing.check_and_forward(chan, &msg) &&
+        accept_packet(status, msg)) {
         handleMessage(&msg);
     }
 }
@@ -1101,11 +1100,32 @@ void GCS_MAVLINK::send_system_time(AP_GPS &gps)
 void GCS_MAVLINK::send_radio_in(uint8_t receiver_rssi)
 {
     uint32_t now = AP_HAL::millis();
+    mavlink_status_t *status = mavlink_get_channel_status(chan);
 
     uint16_t values[18];
     memset(values, 0, sizeof(values));
     hal.rcin->read(values, 18);
 
+    if (status && (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1)) {
+        // for mavlink1 send RC_CHANNELS_RAW, for compatibility with OSD implementations
+        mavlink_msg_rc_channels_raw_send(
+            chan,
+            now,
+            0,
+            values[0],
+            values[1],
+            values[2],
+            values[3],
+            values[4],
+            values[5],
+            values[6],
+            values[7],
+            receiver_rssi);
+        if (!HAVE_PAYLOAD_SPACE(chan, RC_CHANNELS)) {
+            // can't fit RC_CHANNELS
+            return;
+        }
+    }
     mavlink_msg_rc_channels_send(
         chan,
         now,
@@ -1762,4 +1782,19 @@ uint8_t GCS_MAVLINK::handle_preflight_reboot(const mavlink_command_long_t &packe
         return MAV_RESULT_ACCEPTED;
     }
     return MAV_RESULT_UNSUPPORTED;
+}
+
+
+/*
+  handle a R/C bind request (for spektrum)
+ */
+uint8_t GCS_MAVLINK::handle_rc_bind(const mavlink_command_long_t &packet)
+{
+    // initiate bind procedure. We accept the DSM type from either
+    // param1 or param2 due to a past mixup with what parameter is the
+    // right one
+    if (!hal.rcin->rc_bind(packet.param2>0?packet.param2:packet.param1)) {
+        return MAV_RESULT_FAILED;
+    }
+    return MAV_RESULT_ACCEPTED;
 }

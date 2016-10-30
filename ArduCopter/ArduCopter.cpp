@@ -1,5 +1,3 @@
-/// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
-
 /*
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -416,8 +414,7 @@ void Copter::ten_hz_logging_loop()
 #endif
 }
 
-// fifty_hz_logging_loop
-// should be run at 50hz
+// twentyfive_hz_logging - should be run at 25hz
 void Copter::twentyfive_hz_logging()
 {
 #if HIL_MODE != HIL_MODE_DISABLED

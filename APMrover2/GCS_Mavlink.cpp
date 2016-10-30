@@ -1,5 +1,3 @@
-// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
-
 #include "Rover.h"
 #include "version.h"
 
@@ -798,8 +796,10 @@ bool GCS_MAVLINK_Rover::handle_guided_request(AP_Mission::Mission_Command &cmd)
         // only accept position updates when in GUIDED mode
         return false;
     }
-        
     rover.guided_WP = cmd.content.location;
+
+    // This method is only called when we are in Guided WP GUIDED mode
+    rover.guided_mode = Guided_WP;
 
     // make any new wp uploaded instant (in case we are already in Guided mode)
     rover.rtl_complete = false;
@@ -897,12 +897,7 @@ void GCS_MAVLINK_Rover::handleMessage(mavlink_message_t* msg)
             switch(packet.command) {
 
             case MAV_CMD_START_RX_PAIR:
-                // initiate bind procedure
-                if (!hal.rcin->rc_bind(packet.param1)) {
-                    result = MAV_RESULT_FAILED;
-                } else {
-                    result = MAV_RESULT_ACCEPTED;
-                }
+                result = handle_rc_bind(packet);
                 break;
 
             case MAV_CMD_NAV_RETURN_TO_LAUNCH:
@@ -1172,6 +1167,25 @@ void GCS_MAVLINK_Rover::handleMessage(mavlink_message_t* msg)
         case MAV_CMD_DO_CANCEL_MAG_CAL:
             result = rover.compass.handle_mag_cal_command(packet);
             break;
+
+        case MAV_CMD_NAV_SET_YAW_SPEED:
+        {
+            // param1 : yaw angle to adjust direction by in centidegress
+            // param2 : Speed - normalized to 0 .. 1
+
+            // exit if vehicle is not in Guided mode
+            if (rover.control_mode != GUIDED) {
+                break;
+            }
+
+            rover.guided_mode = Guided_Angle;
+            rover.guided_yaw_speed.msg_time_ms = AP_HAL::millis();
+            rover.guided_yaw_speed.turn_angle = packet.param1;
+            rover.guided_yaw_speed.target_speed = constrain_float(packet.param2, 0.0f, 1.0f);
+            rover.nav_set_yaw_speed();
+            result = MAV_RESULT_ACCEPTED;
+            break;
+        }
 
         default:
                 break;

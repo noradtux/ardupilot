@@ -1,4 +1,3 @@
-// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
 /*
 
    Inspired by work done here https://github.com/PX4/Firmware/tree/master/src/drivers/frsky_telemetry from Stefan Rado <px4@sradonia.net>
@@ -905,5 +904,14 @@ void AP_Frsky_Telem::calc_gps_position(void)
         _gps.alt_gps_cm = 0;
         _gps.speed_in_meter = 0;
         _gps.speed_in_centimeter = 0;
+    }
+}
+
+void AP_Frsky_Telem::set_is_flying(bool is_flying)
+{
+    if (is_flying) {
+        _ap.value |= AP_ISFLYING_FLAG;
+    } else {
+        _ap.value &= ~AP_ISFLYING_FLAG;
     }
 }

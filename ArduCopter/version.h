@@ -2,7 +2,7 @@
 
 #include "ap_version.h"
 
-#define THISFIRMWARE "APM:Copter+STorM32 V3.4-rc6"
+#define THISFIRMWARE "APM:Copter+STorM32 V3.4-rc7"
 #define FIRMWARE_VERSION 3,4,0,FIRMWARE_VERSION_TYPE_RC
 
 #ifndef GIT_VERSION

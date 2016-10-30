@@ -1,4 +1,3 @@
-// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
 #pragma once
 
 // Internal defines, don't edit and expect things to work
@@ -40,6 +39,12 @@ enum mode {
     GUIDED=15,
     INITIALISING=16
 };
+
+enum GuidedMode {
+    Guided_WP,
+    Guided_Angle
+};
+
 
 // types of failsafe events
 #define FAILSAFE_EVENT_THROTTLE (1<<0)

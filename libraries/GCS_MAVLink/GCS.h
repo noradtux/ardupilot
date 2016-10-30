@@ -1,5 +1,3 @@
-// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
-
 /// @file	GCS.h
 /// @brief	Interface definition for the various Ground Control System
 // protocols.
@@ -225,6 +223,10 @@ public:
 
 protected:
 
+    // overridable method to check for packet acceptance. Allows for
+    // enforcement of GCS sysid
+    virtual bool accept_packet(const mavlink_status_t &status, mavlink_message_t &msg) { return true; }
+    
     bool            waypoint_receiving; // currently receiving
     // the following two variables are only here because of Tracker
     uint16_t        waypoint_request_i; // request index
@@ -265,6 +267,7 @@ protected:
     void handle_log_message(mavlink_message_t *msg, DataFlash_Class &dataflash);
     void handle_setup_signing(const mavlink_message_t *msg);
     uint8_t handle_preflight_reboot(const mavlink_command_long_t &packet, bool disable_overrides);
+    uint8_t handle_rc_bind(const mavlink_command_long_t &packet);
 
 private:
 

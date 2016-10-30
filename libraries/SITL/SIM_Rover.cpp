@@ -1,4 +1,3 @@
-/// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
 /*
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -28,8 +27,6 @@ SimRover::SimRover(const char *home_str, const char *frame_str) :
     Aircraft(home_str, frame_str),
     max_speed(20),
     max_accel(30),
-    wheelbase(0.335),
-    wheeltrack(0.296),
     max_wheel_turn(35),
     turning_circle(1.8),
     skid_turn_rate(140), // degrees/sec
