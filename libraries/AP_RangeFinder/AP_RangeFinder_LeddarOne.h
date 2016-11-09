@@ -2,22 +2,39 @@
 
 #include "RangeFinder.h"
 #include "RangeFinder_Backend.h"
-#include <GCS_MAVLink/GCS.h>
+
+// defines
+#define LEDDARONE_DEFAULT_ADDRESS 0x01
+#define LEDDARONE_MODOBUS_FUNCTION_CODE 0x04
+#define LEDDARONE_MODOBUS_FUNCTION_REGISTER_ADDRESS 20
+#define LEDDARONE_MODOBUS_FUNCTION_READ_NUMBER 10
+
+#define LEDDARONE_SERIAL_PORT_MAX 250
+#define LEDDARONE_READ_BUFFER_SIZE 25
 
 #define LEDDARONE_DETECTIONS_MAX 3
-
-// default slave address
-#define LEDDARONE_DEFAULT_ADDRESS 0x01
+#define LEDDARONE_DETECTION_DATA_NUMBER_INDEX 10
+#define LEDDARONE_DETECTION_DATA_INDEX_OFFSET 11
+#define LEDDARONE_DETECTION_DATA_OFFSET 4
 
 // LeddarOne status
 enum LeddarOne_Status {
-    LEDDARONE_OK = 0,
-    LEDDARONE_ERR_BAD_CRC = -1,
-    LEDDARONE_ERR_NO_RESPONSES = -2,
-    LEDDARONE_ERR_BAD_RESPONSE = -3,
-    LEDDARONE_ERR_SHORT_RESPONSE = -4,
-    LEDDARONE_ERR_SERIAL_PORT = -5,
-    LEDDARONE_ERR_NUMBER_DETECTIONS = -6
+    LEDDARONE_STATE_OK = 0,
+    LEDDARONE_STATE_READING_BUFFER = 1,
+    LEDDARONE_STATE_ERR_BAD_CRC = -1,
+    LEDDARONE_STATE_ERR_NO_RESPONSES = -2,
+    LEDDARONE_STATE_ERR_BAD_RESPONSE = -3,
+    LEDDARONE_STATE_ERR_SHORT_RESPONSE = -4,
+    LEDDARONE_STATE_ERR_SERIAL_PORT = -5,
+    LEDDARONE_STATE_ERR_NUMBER_DETECTIONS = -6
+};
+
+// LeddarOne Modbus status
+enum LeddarOne_ModbusStatus {
+    LEDDARONE_MODBUS_STATE_INIT = 0,
+    LEDDARONE_MODBUS_STATE_PRE_SEND_REQUEST,
+    LEDDARONE_MODBUS_STATE_SENT_REQUEST,
+    LEDDARONE_MODBUS_STATE_AVAILABLE
 };
 
 class AP_RangeFinder_LeddarOne : public AP_RangeFinder_Backend
@@ -49,7 +66,12 @@ private:
 
     AP_HAL::UARTDriver *uart = nullptr;
     uint32_t last_reading_ms;
+    uint32_t last_sending_request_ms;
 
     uint16_t detections[LEDDARONE_DETECTIONS_MAX];
     uint32_t sum_distance;
+
+    LeddarOne_ModbusStatus modbus_status = LEDDARONE_MODBUS_STATE_INIT;
+    uint8_t read_buffer[LEDDARONE_READ_BUFFER_SIZE];
+    uint32_t read_len;
 };

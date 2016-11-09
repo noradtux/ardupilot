@@ -447,7 +447,7 @@
 #endif
 
 #ifndef ACRO_Y_EXPO_DEFAULT
- #define ACRO_Y_EXPO_DEFAULT        0.3f
+ #define ACRO_Y_EXPO_DEFAULT        0.0f
 #endif
 
 #ifndef ACRO_THR_MID_DEFAULT
@@ -508,8 +508,8 @@
 //////////////////////////////////////////////////////////////////////////////
 // Stabilize Rate Control
 //
-#ifndef ROLL_PITCH_INPUT_MAX
- # define ROLL_PITCH_INPUT_MAX      4500            // roll, pitch input range
+#ifndef ROLL_PITCH_YAW_INPUT_MAX
+ # define ROLL_PITCH_YAW_INPUT_MAX      4500        // roll, pitch and yaw input range
 #endif
 #ifndef DEFAULT_ANGLE_MAX
  # define DEFAULT_ANGLE_MAX         4500            // ANGLE_MAX parameters default value
