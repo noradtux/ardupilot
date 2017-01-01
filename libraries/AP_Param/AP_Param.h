@@ -536,8 +536,10 @@ public:
     /// Value setter - set value, tell GCS
     ///
     void set_and_notify(const T &v) {
-        set(v);
-        notify();
+        if (v != _value) {
+            set(v);
+            notify();
+        }
     }
 
     /// Combined set and save
@@ -634,6 +636,15 @@ public:
     ///
     void set(const T &v) {
         _value = v;
+    }
+
+    /// Value setter - set value, tell GCS
+    ///
+    void set_and_notify(const T &v) {
+        if (v != _value) {
+            set(v);
+            notify();
+        }
     }
 
     /// Combined set and save

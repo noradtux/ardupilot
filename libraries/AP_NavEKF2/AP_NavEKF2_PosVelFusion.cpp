@@ -99,6 +99,9 @@ void NavEKF2_core::ResetPosition(void)
 // reset the vertical position state using the last height measurement
 void NavEKF2_core::ResetHeight(void)
 {
+    // Store the position before the reset so that we can record the reset delta
+    posResetD = stateStruct.position.z;
+
     // write to the state vector
     stateStruct.position.z = -hgtMea;
     outputDataNew.position.z = stateStruct.position.z;
@@ -115,6 +118,12 @@ void NavEKF2_core::ResetHeight(void)
     for (uint8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].position.z = stateStruct.position.z;
     }
+
+    // Calculate the position jump due to the reset
+    posResetD = stateStruct.position.z - posResetD;
+
+    // store the time of the reset
+    lastPosResetD_ms = imuSampleTime_ms;
 
     // reset the corresponding covariances
     zeroRows(P,8,8);
@@ -650,8 +659,16 @@ void NavEKF2_core::selectHeightForFusion()
             // If the terrain height is consistent and we are moving slowly, then it can be
             // used as a height reference in combination with a range finder
             float horizSpeed = norm(stateStruct.velocity.x, stateStruct.velocity.y);
-            bool dontTrustTerrain = (horizSpeed > 2.0f) || !terrainHgtStable;
-            bool trustTerrain = (horizSpeed < 1.0f) && terrainHgtStable;
+            bool dontTrustTerrain,trustTerrain;
+            if (filterStatus.flags.horiz_vel) {
+                // We can use the velocity
+                dontTrustTerrain = (horizSpeed > 2.0f) || !terrainHgtStable;
+                trustTerrain = (horizSpeed < 1.0f) && terrainHgtStable;
+            } else {
+                // We cant use the velocity
+                dontTrustTerrain = !terrainHgtStable;
+                trustTerrain = terrainHgtStable;
+            }
 
             /*
              * Switch between range finder and primary height source using height above ground and speed thresholds with
